@@ -1,0 +1,18 @@
+\begin{table*}[t]
+\centering
+\caption{Test-split retrieval results (mean; 95\% cluster-bootstrap CI over topic groups in parentheses). Relevance labels are synthetic/metadata-derived unless stated otherwise in the text.}
+\label{tab:main}
+\scriptsize
+\begin{tabular}{lrcccc}
+\toprule
+Method & \#Q & P@5 & R@5 & MRR & NDCG@5 \\
+\midrule
+A: Keyword & 103 & 0.113 (0.041--0.230) & 0.199 (0.092--0.327) & 0.275 (0.124--0.489) & 0.221 (0.131--0.321) \\
+B: TF-IDF & 103 & 0.175 (0.106--0.244) & 0.328 (0.192--0.422) & 0.404 (0.314--0.523) & 0.294 (0.163--0.403) \\
+C: Semantic & 103 & 0.249 (0.163--0.377) & 0.493 (0.319--0.743) & 0.526 (0.396--0.663) & 0.426 (0.238--0.637) \\
+D: Metadata-only & 103 & 0.138 (0.000--0.380) & 0.206 (0.000--0.539) & 0.294 (0.059--0.690) & 0.176 (0.016--0.425) \\
+E: Hybrid (alpha=0.7, default) & 103 & 0.303 (0.147--0.463) & 0.569 (0.357--0.761) & 0.596 (0.341--0.845) & 0.444 (0.252--0.618) \\
+E: Hybrid (alpha=0.7, tuned on validation) & 103 & 0.303 (0.147--0.463) & 0.569 (0.357--0.761) & 0.596 (0.341--0.845) & 0.444 (0.252--0.618) \\
+\bottomrule
+\end{tabular}
+\end{table*}

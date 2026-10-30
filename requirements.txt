@@ -1,0 +1,17 @@
+# Pinned to versions verified to exist / used when developing (see environment.txt).
+# Core pipeline (CPU only)
+numpy>=1.26
+pandas>=2.1
+scikit-learn>=1.4
+scipy>=1.11
+PyYAML>=6.0
+matplotlib>=3.8
+# OpenML metadata collection (docs checked against openml-python 0.15.x)
+openml==0.15.1
+# Semantic retrieval (all-MiniLM-L6-v2); pulls in torch + transformers
+sentence-transformers>=2.7
+# Demo UI
+streamlit>=1.35
+# Tests and presentation build
+pytest>=8.0
+python-pptx>=1.0

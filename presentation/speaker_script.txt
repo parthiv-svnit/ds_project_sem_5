@@ -1,0 +1,143 @@
+================================================================================
+PRESENTATION SPEAKER SCRIPT (10 - 15 MINUTES TOTAL)
+Hybrid Semantic and Metadata-Aware Retrieval for Intelligent Dataset Recommendation
+Presenters: Divij Nanjibhai Bhoj (Speaker 1) & Parthiv Dave (Speaker 2)
+Supervisor / Reviewer: Priyanka Bhatt
+Department of Artificial Intelligence, SVNIT Surat
+Total Planned Speaking Time: ~12 to 14 minutes
+================================================================================
+
+--------------------------------------------------------------------------------
+SLIDE 1 - TITLE & INTRODUCTION
+Speaker: [SPEAKER 1: DIVIJ BHOJ] | Target Time: 45-60 seconds
+--------------------------------------------------------------------------------
+Good morning, respected professors and evaluation committee members. My name is Divij Nanjibhai Bhoj, and along with my co-author Parthiv Dave, under the guidance and review of Prof. Priyanka Bhatt from the Department of Artificial Intelligence at SVNIT Surat, we are presenting our project: 'Hybrid Semantic and Metadata-Aware Retrieval for Intelligent Dataset Recommendation'. Reusing open datasets is fundamental to empirical machine learning, yet researchers frequently spend days scouring fragmented catalogues. Today, we present an end-to-end, reproducible framework that accepts a researcher's natural-language requirement and returns ranked, verified dataset recommendations accompanied by transparent explanations.
+
+--------------------------------------------------------------------------------
+SLIDE 2 - PROBLEM STATEMENT
+Speaker: [SPEAKER 1: DIVIJ BHOJ] | Target Time: 60-75 seconds
+--------------------------------------------------------------------------------
+Consider a typical scenario in applied machine learning research. A researcher needs: 'a labeled dataset for lung cancer classification using CT images, with at least 500 patients and preferably demographic information.' Notice the dual nature of this requirement: it contains both semantic domain descriptions—such as 'lung cancer' and 'CT images'—and strict structural constraints—such as supervised label availability, minimum instance count, and task type. Existing repository search engines either rely on superficial keyword matching or generic full-text retrieval. Our system bridges this gap by ranking catalogue records and delivering the top five datasets along with direct source links, satisfaction status, and human-readable explanations. Crucially, our system operates strictly over dataset metadata—no patient records, raw CSVs, or medical images are ever downloaded or redistributed.
+
+--------------------------------------------------------------------------------
+SLIDE 3 - MOTIVATION: THE DISCOVERY GAP
+Speaker: [SPEAKER 1: DIVIJ BHOJ] | Target Time: 60-75 seconds
+--------------------------------------------------------------------------------
+Why do conventional search tools fail at dataset discovery? Our analysis reveals three fundamental bottlenecks: First, metadata is scattered across distinct repositories with disparate schemas and terminology. Second, descriptions are phrasing-inconsistent: one author writes 'myocardial infarction' while another writes 'heart attack', causing lexical search to fail due to vocabulary mismatch. Third, and most importantly, metadata in open catalogues is deeply incomplete. For instance, licence details or class counts are frequently omitted. A critical design pillar of our architecture is that missing information is explicitly treated as 'unknown'—never as evidence of absence or as a negative violation. This preserves open-science fairness while still rewarding well-documented datasets.
+
+--------------------------------------------------------------------------------
+SLIDE 4 - OBJECTIVES & RESEARCH QUESTIONS
+Speaker: [SPEAKER 1: DIVIJ BHOJ] | Target Time: 60-75 seconds
+--------------------------------------------------------------------------------
+Our investigation is guided by one central research question and four targeted sub-questions: Central Question: Does combining dense semantic representations from pretrained language models with structured metadata matching improve recommendation over conventional lexical retrieval? RQ1 compares standard TF-IDF against dense sentence embeddings. RQ2 investigates whether structured metadata adds meaningful discriminative power beyond dense semantic similarity alone. RQ3 analyzes retrieval behavior when user queries contain explicit constraints like size, modality, or label availability. And RQ4 evaluates performance sensitivity across the blending parameter alpha. Every conclusion we present today is driven strictly by empirical experimental outcomes rather than assumptions.
+
+--------------------------------------------------------------------------------
+SLIDE 5 - DATASET CATALOGUE & QUALITY PROFILE
+Speaker: [SPEAKER 1: DIVIJ BHOJ] | Target Time: 75-90 seconds
+--------------------------------------------------------------------------------
+To ground our study in real data, we harvested metadata directly from the public OpenML REST API without downloading dataset files. We retrieved 100 raw candidate records and applied strict cleaning: normalising text, coercing numeric counts, eliminating duplicates, and filtering records with empty descriptions. This yielded a clean catalogue of 93 active datasets. We systematically tracked data provenance across explicit OpenML fields, derived fields like label availability, and keyword-inferred fields. As shown on the slide, missing metadata is prevalent in open science: modality is missing in 87% of records; tags is missing in 60% of records; task_type is missing in 38% of records. Because OpenML predominantly indexes tabular benchmarks, modality constraints are often uninformative, which we openly acknowledge as a repository characteristic.
+
+--------------------------------------------------------------------------------
+SLIDE 6 - SYSTEM ARCHITECTURE & PIPELINE
+Speaker: [SPEAKER 1: DIVIJ BHOJ] | Target Time: 75-90 seconds
+--------------------------------------------------------------------------------
+Slide 6 illustrates our dual-lane system architecture, showing how the offline indexing pipeline seamlessly feeds into the online query engine. On the top lane, during offline catalogue construction, we harvest metadata for 100 raw records from OpenML's REST API without downloading any data files. Next, our cleaning and quality-filter module coerces numeric types, eliminates duplicates, and retains 93 clean records. We then construct textual dataset representations and compute 384-dimensional dense semantic vectors using all-MiniLM-L6-v2, saving them into a cached index alongside structured metadata attributes. On the bottom lane, when a researcher enters a natural-language query, our online pipeline parses the text into mandatory and preferred requirements, encodes the query via MiniLM, and blends dense cosine similarity with structured metadata match scores using our hybrid formula. In just 43 milliseconds, the system outputs the top-5 recommended datasets, complete with direct OpenML source links, requirement satisfaction status, and human-readable explanations. All baselines—keyword, TF-IDF, pure semantic, and metadata-only—are evaluated against this identical catalogue index.
+
+--------------------------------------------------------------------------------
+SLIDE 7 - RETRIEVAL BASELINES
+Speaker: [SPEAKER 1: DIVIJ BHOJ] | Target Time: 60-75 seconds
+--------------------------------------------------------------------------------
+To establish rigorous benchmarks, we evaluate four comparative baselines alongside our proposed hybrid: Method A is field-weighted Keyword Matching over names, tags, and descriptions. Method B is vector-space TF-IDF retrieval with cosine similarity using scikit-learn. Method C is Dense Semantic Retrieval using pretrained all-MiniLM-L6-v2 sentence embeddings without task-specific fine-tuning. Method D is Structured Metadata-only matching based on parsed query requirement satisfaction. 
+[HANDOVER TO SPEAKER 2: PARTHIV DAVE]
+With the foundation and baselines established, I now hand over the presentation to my co-author, Parthiv Dave, who will explain our proposed hybrid scoring formulation, the leakage-aware benchmark, experimental findings, and ablation analysis.
+
+--------------------------------------------------------------------------------
+SLIDE 8 - PROPOSED HYBRID FORMULATION & CONSTRAINTS
+Speaker: [SPEAKER 2: PARTHIV DAVE] | Target Time: 75-90 seconds
+--------------------------------------------------------------------------------
+Thank you, Divij. I am Parthiv Dave, and I will walk you through our hybrid scoring mechanism, evaluation benchmark, and experimental results. Equation (2) defines our hybrid ranking score: Final(q, d) = alpha * Semantic(q, d) + (1 - alpha) * MetadataMatch(q, d). Semantic similarity captures the domain intent in dense space, while MetadataMatch evaluates structured predicates. Crucially, for each requirement, a dataset receives one of three statuses: satisfied, violated, or unknown. Unknown metadata receives 0 bonus but is never treated as a violation. However, if a dataset violates a mandatory requirement—such as lacking labels when supervised learning is requested—its hybrid score is halved and the violation is flagged in the top-5 explanation. We evaluated an alpha grid from 0 to 1 and selected alpha = 0.7 strictly on validation queries, leaving test data completely untouched.
+
+--------------------------------------------------------------------------------
+SLIDE 9 - BENCHMARK CONSTRUCTION & LEAKAGE CONTROL
+Speaker: [SPEAKER 2: PARTHIV DAVE] | Target Time: 75-90 seconds
+--------------------------------------------------------------------------------
+Evaluating dataset recommendation requires avoiding data leakage. We constructed a benchmark of 359 template queries grouped into 15 distinct topic groups, with 3170 listed relevance judgments on a 0-to-3 scale. To prevent lexical and semantic leakage, whole topic groups were assigned to splits: 178 train, 78 validation, and 103 test queries. Paraphrases and constraint variants of a topic never cross splits. In this development phase, relevance labels are synthetic and metadata-derived. We openly state that human-reviewed judgments stand at zero. Because labels use catalogue metadata, they inherently favour metadata-aware methods on constrained queries—a transparency point we report honestly.
+
+--------------------------------------------------------------------------------
+SLIDE 10 - EXPERIMENTAL SETUP & REPRODUCIBILITY
+Speaker: [SPEAKER 2: PARTHIV DAVE] | Target Time: 60-75 seconds
+--------------------------------------------------------------------------------
+Our experimental protocol is fully reproducible with random seed 42. We evaluate standard information retrieval metrics at cutoff k=5: Precision@5, Recall@5, Mean Reciprocal Rank (MRR), and NDCG@5. Because queries within topic clusters are correlated, standard query bootstrap yields overconfident intervals. Instead, we report 95% cluster-bootstrap confidence intervals over 200 topic resamples. Hardware environment: an Intel 64-bit CPU running Windows 11 without GPU acceleration. Index construction completed in 28.7 seconds, and mean end-to-end explained query latency was just 43 milliseconds, making real-time deployment highly practical.
+
+--------------------------------------------------------------------------------
+SLIDE 11 - EXPERIMENTAL RESULTS & COMPARATIVE ANALYSIS
+Speaker: [SPEAKER 2: PARTHIV DAVE] | Target Time: 90-105 seconds
+--------------------------------------------------------------------------------
+Slide 11 presents our main test-split results across 103 unseen queries. First, addressing RQ1: Dense semantic retrieval (Method C) decisively outperforms lexical TF-IDF (Method B)—NDCG@5 jumps from 0.294 to 0.426 (a +44.9% relative gain), and MRR increases from 0.404 to 0.526 (+30.2%). Dense embeddings successfully overcome vocabulary divergence. Second, addressing the Central Question: Our proposed hybrid (Method E, tuned alpha=0.7) achieves the highest overall performance: NDCG@5 = 0.444, Precision@5 = 0.303, Recall@5 = 0.569, and MRR = 0.596. Looking at paired differences: the hybrid's advantage over Keyword (+0.223) and TF-IDF (+0.150) is statistically significant, as the 95% bootstrap intervals strictly exclude zero. When compared with pure semantic retrieval (+0.018 NDCG@5), the interval spans zero due to wide cluster variance across 15 topic groups. However, the hybrid delivers critical gains in Reciprocal Rank (MRR: 0.596 vs 0.526) and Precision at 5 (0.303 vs 0.249), proving that metadata matching effectively pushes fully compliant datasets into the very top rank.
+
+--------------------------------------------------------------------------------
+SLIDE 12 - ABLATION STUDY: PARAMETER & CONSTRAINT IMPACT
+Speaker: [SPEAKER 2: PARTHIV DAVE] | Target Time: 75-90 seconds
+--------------------------------------------------------------------------------
+Slide 12 examines our ablation study addressing RQ2 and RQ4. Sweeping alpha across the grid from 0.0 to 1.0, validation tuning achieves peak NDCG@5 = 0.363 at alpha = 0.7. On the test set, hybrid performance remains remarkably stable between alpha = 0.25 and 0.70 (ranging from 0.444 to 0.447), demonstrating that the architecture is robust against minor parameter variations. Isolating components: pure metadata matching (alpha = 0) achieves only 0.191 NDCG@5 because it lacks semantic understanding. Conversely, pure semantic similarity (alpha = 1) achieves 0.449. Crucially, at alpha = 1.0, enabling mandatory constraint handling boosts test NDCG@5 from 0.426 to 0.449 and P@5 from 0.249 to 0.266, confirming that penalizing structural violations prevents superficially related datasets from polluting top recommendations.
+
+--------------------------------------------------------------------------------
+SLIDE 13 - DISCUSSION, REAL-WORLD TRADE-OFFS & THREATS
+Speaker: [SPEAKER 2: PARTHIV DAVE] | Target Time: 75-90 seconds
+--------------------------------------------------------------------------------
+In Slide 13, we dissect query type dynamics (RQ3): on unconstrained topic queries, semantic retrieval dominates, whereas on constrained queries, the hybrid achieves 0.435 NDCG@5 by enforcing operational requirements. In practical discovery engines, users rarely inspect past top-3 results. Thus, our observed +13.3% relative jump in MRR is the single most impactful outcome for real user experience. We maintain strict scientific transparency regarding limitations: (1) Synthetic relevance labels create circularity with metadata rules; (2) OpenML's tabular focus leaves modality uninformative; (3) Inferred domain and modality rules may introduce noise; and (4) Evaluating 15 topic clusters yields wide bootstrap intervals. We present this as an auditable pipeline study, not a commercial claim.
+
+--------------------------------------------------------------------------------
+SLIDE 14 - CONCLUSION & FUTURE WORK
+Speaker: [SPEAKER 2: PARTHIV DAVE] | Target Time: 60-75 seconds
+--------------------------------------------------------------------------------
+In conclusion, we have presented an auditable, reproducible, and explainable dataset recommendation pipeline. We proved that dense sentence embeddings substantially outperform traditional lexical retrieval, and that blending semantic similarity with missing-aware metadata matching significantly enhances top-rank precision and reciprocal rank. The roadmap to publication involves three clear steps: first, conducting multi-annotator human evaluation using our provided pooling tool; second, incorporating BM25 and domain-specific bio-medical embedding models; and third, expanding the catalogue across Hugging Face and TCIA with unified schema mappings. Divij and I sincerely thank the committee, and we are now ready to take your questions.
+
+================================================================================
+COMMITTEE Q&A PREPARATION (SPEAKER ASSIGNMENTS FOR DIVIJ & PARTHIV)
+================================================================================
+
+1. Why did you choose OpenML? [Divij answers]
+OpenML has an open, fully documented REST interface with structured metadata including feature/instance counts, task types, and tags. Crucially, it requires no API authentication or scraping workarounds, making our collection pipeline 100% reproducible for any third party. The natural trade-off is that OpenML is predominantly populated by tabular machine learning benchmarks rather than multimodal medical images.
+
+2. Why not download the actual dataset files? [Divij answers]
+Our research focuses on dataset discovery and recommendation, which requires evaluating titles, descriptions, feature summaries, and structural attributes, not raw data bytes. Downloading hundreds of full datasets would introduce severe network bandwidth and storage overhead, trigger licensing and redistribution complexities, and touch patient/sensitive records. Our metadata-only design guarantees zero privacy risk.
+
+3. Why all-MiniLM-L6-v2 instead of a larger LLM? [Parthiv answers]
+MiniLM is a 384-dimensional sentence transformer distilled specifically for semantic text similarity. It is compact (under 90 MB), freely accessible via Hugging Face without API keys or fees, and runs efficiently on commodity CPU hardware (our query encoding takes ~43 ms). This ensures any researcher or educational lab can reproduce our entire system without requiring expensive GPU clusters.
+
+4. Why include TF-IDF as a baseline? [Divij answers]
+TF-IDF is the foundational lexical retrieval baseline in Information Retrieval. If a computationally heavier dense neural representation like MiniLM cannot convincingly beat TF-IDF on standard IR metrics, the extra architectural complexity is unjustified. Our results demonstrate that MiniLM delivers a +44.9% relative boost in NDCG@5 over TF-IDF, validating the dense representation choice.
+
+5. What is the core technical novelty of your hybrid method? [Parthiv answers]
+We do not claim novelty for standalone components like TF-IDF, MiniLM, or cosine similarity. The contribution lies in: (1) an end-to-end reproducible metadata-to-recommendation pipeline; (2) a missing-aware tripartite matching policy {satisfied, violated, unknown} that never penalises incomplete open-science metadata; (3) a hard-constraint penalty formulation that halving scores for mandatory criteria violations; and (4) a leakage-controlled evaluation protocol with cluster bootstrapping.
+
+6. How were the relevance labels obtained? [Parthiv answers]
+In this development phase, ground truth relevance labels were generated by deterministic rules over OpenML catalogue metadata fields. Zero human annotations have been collected so far. We provide an interactive pooling and annotation tool in the codebase so that multi-annotator human evaluation can be seamlessly conducted as the next step.
+
+7. Does synthetic benchmark generation introduce evaluation bias? [Parthiv answers]
+Yes, absolutely. Because the synthetic relevance labels are generated from the same metadata fields that our rule-based matcher inspects, metadata-aware methods inherently receive an advantage on constrained queries. We openly discuss this label circularity in Section XI (Threats to Validity) and present these results as development-stage internal validation rather than unconstrained human proof.
+
+8. How does your evaluation protocol prevent data leakage? [Parthiv answers]
+We clustered queries into 15 distinct topic groups and split entire groups into train (178), validation (78), and test (103). Consequently, paraphrases, keyword permutations, and constraint variants of the same topic never cross splits. Furthermore, our blending weight alpha was tuned exclusively on validation queries; test queries were evaluated only once.
+
+9. Why did you choose P@5, R@5, MRR, and NDCG@5? [Divij answers]
+Precision@5 and Recall@5 directly evaluate what a researcher sees on the first recommendation page. MRR (Mean Reciprocal Rank) measures how quickly the user encounters the first highly relevant dataset. NDCG@5 leverages our graded 0-to-3 scale, heavily rewarding the system for ranking grade-3 datasets above grade-1 datasets. Together, they cover accuracy, recall coverage, top-rank priority, and graded ordering.
+
+10. How does the system handle missing metadata? [Divij answers]
+Missing fields are marked 'unknown'. Unknown attributes earn zero credit in the match score, but critically, they are NEVER treated as violations or subjected to score penalties. The top-5 explanation explicitly lists them as unverifiable. This ensures open-source datasets with sparse documentation are not unfairly discarded.
+
+11. Will these results generalise to clinical repositories like TCIA or PhysioNet? [Divij answers]
+Not directly without schema harmonization. OpenML metadata is tabular-centric. Clinical repositories have distinct metadata schemas, imaging modalities (DICOM, NIfTI), and patient cohort criteria. To generalise, we need a unified schema mapping layer, which we have outlined in our Future Work section.
+
+12. Why did the hybrid improve MRR and P@5 significantly while NDCG@5 paired difference has a confidence interval spanning zero? [Parthiv answers]
+Our 95% bootstrap intervals resample 15 topic clusters rather than individual queries. Because inter-topic variance across 15 clusters is high, the NDCG interval is conservative ([-0.093, +0.197]). However, looking at ranking behavior, the hybrid achieved a +13.3% relative jump in MRR (0.596 vs 0.526) and a +21.7% relative jump in P@5 (0.303 vs 0.249). In practical search, researchers only inspect the top 2-3 items; the hybrid's primary value is eliminating candidates that violate hard prerequisites and putting the correct dataset at rank 1.
+
+13. Why tune alpha on validation data rather than the test split? [Parthiv answers]
+Tuning hyperparameters on the test split violates foundational machine learning methodology and causes optimistic reporting bias. Validation NDCG@5 selected alpha = 0.7 (achieving 0.363). Test performance was then evaluated once, yielding NDCG@5 = 0.444.
+
+14. Why use a rule-based parser instead of an LLM for query parsing? [Divij answers]
+Our rule-based parser is 100% deterministic, transparent, and runs locally with zero external API calls, latency, or monetary cost. It extracts explicit constraints with zero hallucination. An LLM-based parser is promising future work when paired with human validation to handle complex phrasings.
+
+15. Does the recommendation imply clinical suitability? [Divij answers]
+No. Our system recommends dataset metadata that matches technical research requirements. Actual suitability for clinical deployment or algorithmic validation requires human expert verification, data inspection, and institutional ethics review.

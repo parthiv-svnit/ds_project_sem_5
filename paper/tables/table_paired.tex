@@ -1,0 +1,17 @@
+\begin{table}[t]
+\centering
+\caption{Paired differences on test queries (tuned hybrid minus comparator), NDCG@5, with 95\% cluster-bootstrap CI.}
+\label{tab:paired}
+\scriptsize
+\begin{tabular}{lccc}
+\toprule
+Comparator & $\Delta$ & 95\% CI & CI excludes 0 \\
+\midrule
+keyword & +0.223 & [+0.053, +0.469] & yes \\
+tfidf & +0.150 & [+0.033, +0.256] & yes \\
+semantic & +0.018 & [-0.093, +0.197] & no \\
+metadata & +0.268 & [+0.039, +0.469] & yes \\
+hybrid\_a0.7\_constrained & +0.000 & [+0.000, +0.000] & no \\
+\bottomrule
+\end{tabular}
+\end{table}

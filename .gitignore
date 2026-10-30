@@ -1,0 +1,29 @@
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.ipynb_checkpoints/
+data/raw/*.jsonl
+data/raw/*.json
+data/processed/*.npy
+data/processed/*.csv
+data/benchmark/*.csv
+outputs/results/*
+outputs/tables/*
+outputs/figures/*
+*.aux
+*.log
+*.out
+*.bbl
+*.blg
+*.synctex.gz
+!**/.gitkeep
+!data/fixture/*
+
+# Deliverable bundles (keep out of repo; regenerate with build_deliverables.py)
+paper.zip
+*.zip
+
+# Compiled deliverables (large binaries — regenerate locally)
+presentation/project_presentation.pptx
+presentation/speaker_script.docx

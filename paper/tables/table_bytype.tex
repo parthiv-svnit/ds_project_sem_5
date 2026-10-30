@@ -1,0 +1,18 @@
+\begin{table}[t]
+\centering
+\caption{Test NDCG@5 by query type (topic-only vs.\ explicit constraints).}
+\label{tab:bytype}
+\scriptsize
+\begin{tabular}{lcc}
+\toprule
+Method & Topic-only & With constraints \\
+\midrule
+A: Keyword & 0.209 (16) & 0.223 (87) \\
+B: TF-IDF & 0.315 (16) & 0.291 (87) \\
+C: Semantic & 0.462 (16) & 0.419 (87) \\
+D: Metadata-only & 0.139 (16) & 0.183 (87) \\
+E: Hybrid (tuned) & 0.494 (16) & 0.435 (87) \\
+E: Hybrid (tuned, no constraint handling) & 0.494 (16) & 0.438 (87) \\
+\bottomrule
+\end{tabular}
+\end{table}
