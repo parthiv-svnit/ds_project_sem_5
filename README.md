@@ -198,4 +198,4 @@ All bibliography entries carry a verification status at the top of `references.b
 2. Human-annotate pooled results (two or more annotators, report agreement) and re-run with `--qrels reviewed`.
 3. Re-verify every entry marked PARTIALLY VERIFIED in `references.bib`; fill the PENDING items.
 4. Add a supervisor/affiliation check, ethics statement review and your institution's AI-use disclosure; confirm the venue's template.
-5. Consider broader catalogues (Hugging Face, TCIA, GDC, PhysioNet) with a documented schema mapping.
+5. Consider broader catalogues (Hugging Face, TCIA, GDC, PhysioNet) with a documented schema mapping..
